@@ -1,7 +1,7 @@
 {
     "name": "poiskiinfo/cmscode",
     "description": "Official cmscode PHP library",
-    "keywords":["cmscode","cmscode.ru","текстовая база данных для своей cmscode.ru"],
+    "keywords":["cmscode","cmscode.ru","txt data base for cms cmscode cmscode.ru"],
     "type":"library",
 	"homepage": "https://github.com/poiskiinfo/cmscode", 
     "license": "MIT",
@@ -17,8 +17,8 @@
             "email": "poiskiinfo@yandex.ru"
 		},
 		"autoload": {
-            "psr-4": {
-                "Cmscode\\": "src/",
+            "psr-0": {
+                "Cmscode": "src/",
                 "Cmscode\\Tests\\": "tests/"
             }
         }
