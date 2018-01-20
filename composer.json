@@ -21,8 +21,5 @@
             "homepage": "http://cmscode.ru"
         }
     ],
-    "support": {
-        "issues": "https://github.com/nixsolutions/yandex-php-library/issues",
-        "wiki": "https://github.com/nixsolutions/yandex-php-library/wiki"
-    }
+ 
 }
