@@ -5,6 +5,7 @@
     "type":"library",
 	"homepage": "https://github.com/poiskiinfo/cmscode", 
     "license": "MIT",
+	"version": "0.0.5",
     "authors": [
         {
             "name": "cmscode.ru",
@@ -14,9 +15,6 @@
     "support": {
             "email": "poiskiinfo@yandex.ru"
 		},
-		"require":
-            "php": ">=5.0.0"
-        }, 
 		"autoload": {
             "psr-4": {
                 "Cmscode": "src/",
