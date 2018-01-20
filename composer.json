@@ -5,11 +5,12 @@
     "type":"library",
 	"homepage": "https://github.com/poiskiinfo/cmscode", 
     "license": "MIT",
-	"version": "0.0.5",
     "authors": [
         {
             "name": "cmscode.ru",
-            "email": "poiskiinfo@yandex.ru"
+            "email": "poiskiinfo@yandex.ru",
+			"homepage": "http://cmscode.ru",
+            "role": "Developer"
         }
     ],
     "support": {
@@ -18,7 +19,7 @@
 		"autoload": {
             "psr-4": {
                 "Cmscode\\": "src/",
-                "Cmscode\\Tests": "tests/"
+                "Cmscode\\Tests\\": "tests/"
             }
         }
 }
