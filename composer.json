@@ -1,0 +1,28 @@
+{
+    "name": "Cmscode",
+    "description": "Official cmscode PHP library",
+    "keywords":["cmscode","cmscode.ru"],
+    "type":"library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Cmscode": "src/",
+            "Cmscode\\Tests": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "cmscode.ru",
+            "email": "poiskiinfo@yandex.ru"
+        },
+        {
+            "name": "Cmscode",
+            "homepage": "http://cmscode.ru"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/nixsolutions/yandex-php-library/issues",
+        "wiki": "https://github.com/nixsolutions/yandex-php-library/wiki"
+    }
+}
