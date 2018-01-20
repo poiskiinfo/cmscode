@@ -5,8 +5,6 @@
     "type":"library",
 	"homepage": "https://github.com/poiskiinfo/cmscode", 
     "license": "MIT",
-    "minimum-stability": "master",
-    
     "authors": [
         {
             "name": "cmscode.ru",
