@@ -1,5 +1,5 @@
 {
-    "name": "cmscode",
+    "name": "cmscode/txtbd",
     "description": "Official cmscode PHP library",
     "keywords":["cmscode","cmscode.ru","текстовая база данных для своей cmscode.ru"],
     "type":"library",
