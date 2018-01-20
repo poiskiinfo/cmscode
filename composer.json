@@ -17,7 +17,7 @@
 		},
 		"autoload": {
             "psr-4": {
-                "Cmscode": "src/",
+                "Cmscode\\": "src/",
                 "Cmscode\\Tests": "tests/"
             }
         }
