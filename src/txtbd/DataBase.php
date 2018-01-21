@@ -1,9 +1,9 @@
 <?php
 /**
- * cmscode.ru php library php data base
- *
- * @copyright cmscode.ru
- * @link https://github.com/nixsolutions/yandex-php-library
+ * Второй файл примера правильного документирования
+ * 
+ * @author poiskiinfo <poiskiinfo@yandex.ru>
+ * @package txtbd
  */
 
 /**
@@ -12,15 +12,13 @@
 namespace cmscode\txtbd;
 
 /**
- * Class DataBase
+ * класс для работы с текстовой базой данны
  *
- * @category Cmscode
- * @package bd
- *
- * @author   Ivan Shebarshov <poiskiinfo@yandex.ru>
- * @created  19.01.18 12:35
- *
- * @see https://tech.yandex.com/disk/doc/dg/concepts/api-methods-docpage/
+ *Создание базы данных, update, insert и куча других методов для полноценной
+ *текстовой базы данных своя струткура и файлы 
+ *@package files
+ *@subpackage classes
+ *@version 0.0.5
  */
 class DataBase
 {
@@ -28,30 +26,24 @@ class DataBase
      * @var string
      */
     private $version = '0.0.5';
-/* Автор: Иван Шебаршов. Сайт cmscode.ru
-данный класс разарботан специально для своей cms:cmscode на текстовых файлах.
-$namebd - название тектовой бд без точки и расширения .php
-$p - относительный путь ./, ../, ../../, и тд. служит для того чтобы указать точно корень относительно того в каком файле подрубается.
-выборку из бд осуществляем стандартными средствами php 
-пример: 
-$h= fopen($p."$n.php", "r"); // открываем нужную бд где $n полный путь до файла без ./ и ../ и расширения .php
-$d= fgets($h); // обязательно пропускаем 1ю строку с названиями столбцов а то там лежит <?php die();?>
-while (($d = fgets($h)) !== FALSE) 
-	{$data=explode('^',$d); // если неустраивает в конце строка \r\n то можете произвести trim перед вызовом explode
-      if($id==$data['0']){ //производим выборку из бд по id поля можете делать выборку и по номерам своих столбцов.
-// производим некие действия для чтения бд, можем занести некоторые данные в массив и позже вывести их пользователю или сразу вывести в данном блоке. или отсортировать даные по дате. если незнаете название и порядок столбцов то юзаем getFieldsName и вставляем нужное число за место нуля в $data['0']; проверка по условию может быть разной это дает гибкость в выборке из бд;
-}	}fclose($h); //закрываем файл бд.
 
-при больших обьемах файлов лучше используйте cache_cc кеширование в 30 раз быстрее открывает данные да и позволяет оптимизирвать вывод.
-если вывод и название бд написаны правильно то не требуется проверок на ошибки так как тестируем все на локальной машине перед публикацией.
-
-*/
-
-/* getFieldsName показ названий столбцов выбранной таблицы
-$number - int от 0 до 3 целое число;
-0- передает массив вида [0]=>value и тд
-1- передает массив вида [value]=>0 и тд
-*/
+    /**
+     * получить название столбцов выбранной таблицы
+     *
+	 * смотря какой параметр выбра в поле $number если 0или1 то return
+	 *вернет string, если 2или3 то вернет array массив
+	 *
+     *$number - int от 0 до 3 целое число;
+     *0- передает массив вида [0]=>value и тд
+     *1- передает массив вида [value]=>0 и тд
+     *
+     *
+     *
+     *@param string $namebd должен содержать путь относительный без обратных слешей 
+     *@param string $p содержит путь относительный может принемать значения: ./,../,../../ и так далее.
+     *@param int $number щаблон вывода значений принемает 4 целых  значения от 0-3
+	 *@return  string or array
+     */
 	public function getFieldsName($namebd,$p,$number='0')
 	{
      $handle = fopen($p.$namebd.'.php', "r");
@@ -105,9 +97,13 @@ $number - int от 0 до 3 целое число;
 	 return $data;
  	}
 
-     /* getParamsBd функция для считывания параметров категорий.*/
-
-     public function getParamsBd($namebd,$p)
+    /**
+     * функция для считывания параметров базы данных.
+	 *
+	 *Параметры такиеже как в 1й функции класса
+	 *@return array
+	 */
+    public function getParamsBd($namebd,$p)
     {
      $file = $p.$namebd.'.php';
      $h= fopen("$file", 'r');
@@ -122,35 +118,43 @@ $number - int от 0 до 3 целое число;
      return $data;
 	}
 
-/* select_cc - генератор перебора полей файла для более быстрого открывания в генераторе и экономии памяти при больших файлах бд .
-пример работы с генератором 
-$gen=select_cc('bd/com_an_k2/categories/cmscode.php','');
-foreach ($gen as $line) {
-$data=explode('^',$line);
-if($line['0']=='21'){ $massiv[]=$data;$gen->send('stop');} //получили массив с данными и позже его обработаем. условия могут быть разными.
-}
-
-
-*/
-
-public function select($namebd,$p) {
-    $file = fopen($p.$namebd.'.php', "r"); $line= fgets($file);
-    while (!feof($file))  {$line= fgets($file);
-$cmd=(yield $line);
-if ($cmd == 'stop') {
-fclose($file);
-return; /* выход из генератора.*/
-        }
-		}fclose($file);
-}
+    /**
+	 *генератор перебора полей файла
+	 *
+     *для более быстрого открывания в
+	 *генераторе и экономии памяти при больших файлах бд.
+	 *пример работы с генератором $gen->send('stop'); точка выхода из генератора
+	 * аналог return
+	 *<pre>$gen=select_cc('bd/com_an_k2/categories/cmscode.php','');
+	 *foreach ($gen as $line) {
+	 *$data=explode('^',$line);
+	 *if($line['0']=='21'){ $massiv[]=$data;$gen->send('stop');} 
+     *}</pre>
+     */
+    public function select($namebd,$p) 
+	{
+     $file = fopen($p.$namebd.'.php', "r"); $line= fgets($file);
+         while (!feof($file))  {
+	     $line= fgets($file);
+         $cmd=(yield $line);
+             if ($cmd == 'stop') {
+             fclose($file);
+             return;
+            }
+	    }
+	 fclose($file);
+    }
 	
-	
-
-
-/*
- insert_cc служит для добавления новых строк в текстовую бд с названиями столбцов бд в виде массив $field_name и их значений в ввиде массива в том же порядке должны идти
+    /**
+     *Служит для добавления новых строк в текстовую бд
+	 *	 
+	 *с названиями столбцов бд в виде массив и их значений <br>
+	 *в ввиде массива в том же порядке должны идти.
+	 *@param array $field_name array($fildNameBd1,$fildNameBd2,..$fildNameBd_n);
+	 *@param array $value array(value1,value2,...,value_n);
+	 *@param string $namebd
+	 *@param string $p
 */
-
 public function insert($namebd,$field_name,$value,$p)
 {
 $file = $p."$namebd.php";
@@ -306,7 +310,7 @@ id^title^shablon
 id должен идти 1м полем без вареантов по нему будет происходить обновление строк удаление и вставка новых строк. либо переопределяете функции под себя.
 
 */
-public function create_cc($namebd,$znachenie,$p)
+public function create($namebd,$znachenie,$p)
 {
 $file=$p.$namebd;
 $znachenie=$this->trim_replace_cc($znachenie);
