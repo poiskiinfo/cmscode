@@ -125,7 +125,7 @@ class DataBase
 	 *генераторе и экономии памяти при больших файлах бд.
 	 *пример работы с генератором $gen->send('stop'); точка выхода из генератора
 	 * аналог return
-	 *<pre>$gen=select_cc('bd/com_an_k2/categories/cmscode.php','');
+	 *<pre>$gen=select('bd/com_an_k2/categories/cmscode.php','');
 	 *foreach ($gen as $line) {
 	 *$data=explode('^',$line);
 	 *if($line['0']=='21'){ $massiv[]=$data;$gen->send('stop');} 
@@ -154,76 +154,90 @@ class DataBase
 	 *@param array $value array(value1,value2,...,value_n);
 	 *@param string $namebd
 	 *@param string $p
-*/
-public function insert($namebd,$field_name,$value,$p)
-{
-$file = $p."$namebd.php";
-$stolbci=$this->getFieldsName("$namebd","$p",'0');
-$vs=count($stolbci);
-for($k=0;$k<$vs;$k++){$data[$k]='';}
-$stolbci=$this->getFieldsName("$namebd","$p",'3');
-$vs=count($field_name);
-for($k=0;$k<$vs;$k++){ 
-if(array_key_exists($field_name[$k], $stolbci)){$data[$stolbci[$field_name[$k]][0]]=$this->obrezka_poley_cc($this->zss_replace_cc($value[$k]),$stolbci[$field_name[$k]][1]);}	
-	                 }
-$znachenie=trim(implode('^',$data));
-$a="\n".$znachenie;	
-$dfdsg=file_put_contents($file, $a, FILE_APPEND | LOCK_EX);
-if($dfdsg===false){return 'no';}
-else{return 'ok';}
-}
+     */
+    public function insert($namebd,$field_name,$value,$p)
+    {
+     $file = $p."$namebd.php";
+     $stolbci=$this->getFieldsName("$namebd","$p",'0');
+     $vs=count($stolbci);
+     for($k=0;$k<$vs;$k++){$data[$k]='';}
+     $stolbci=$this->getFieldsName("$namebd","$p",'3');
+     $vs=count($field_name);
+         for($k=0;$k<$vs;$k++){ 
+         if(array_key_exists($field_name[$k], $stolbci)){$data[$stolbci[$field_name[$k]]['0']]=$this->obrezka_poley_cc($this->zss_replace_cc($value[$k]),$stolbci[$field_name[$k]]['1']);}	
+	    }
+     $znachenie=trim(implode('^',$data));
+     $a="\n".$znachenie;	
+     $dfdsg=file_put_contents($file, $a, FILE_APPEND | LOCK_EX);
+     if($dfdsg===false){return 'no';}
+     else{return 'ok';}
+    }
 
-/* updates_cc - служит для обновления строки тектовой бд указанных столбцов $fn и их значений $v в виде массива;
-id - айди строки которую надо обновить
-$n=$namebd;
- */
+    /**
+	 *служит для обновления строки тектовой бд указанных столбцов $fn и их значений $v в виде массива;
+	 *id - айди строки которую надо обновить
+	 *
+	 *@param array $field_name array($fildNameBd1,$fildNameBd2,..$fildNameBd_n);
+	 *@param array $value array(value1,value2,...,value_n);
+	 *@param string $n ==$namebd
+	 *@param string $p
+	 *@param string $id номер id редактируемой строки
+     */
+     public function update($n,$fn,$v,$id,$p)
+	{
+     $file = $p."$n.php";
+     $h= fopen("$file", "rb");
+     $d= fgets($h);
+     $messeg='no';
+         while (($d = fgets($h)) !== FALSE) {
+         $data=explode('^',$d);
+             if($id==$data['0']){
+             $messeg='ok';		
+             $b=implode('^',$data);
+             $b=$this->trim_replace_cc($b);
+             break;
+            }
+	    }
+	 fclose($h);
+	     if($messeg=='ok'){
+		     $stolbci=$this->getFieldsName("$n","$p",'3');
+		     $vs=count($fn);
+		     for($k=0;$k<$vs;$k++){ 
+			     if(array_key_exists($fn[$k], $stolbci)){
+			     $data[$stolbci[$fn[$k]]['0']]=$this->obrezka_poley_cc($this->zss_replace_cc($v[$k]),$stolbci[$fn[$k]]['1']);}	
+	        }			 
+         $data['0']=$id;		 		 
+         $znachenie=implode('^',$data);
+         $znachenie=$this->trim_replace_cc($znachenie);
+         $a=file_get_contents("$file");	
+         $a=str_replace("$b","$znachenie",$a);	
+         file_put_contents($file, $a, LOCK_EX);
+         return $messeg;
+        }
+     else{ return $messeg;}
+    }
 
-public function update($n,$fn,$v,$id,$p){
-$file = $p."$n.php";
-$h= fopen("$file", "rb");
-$d= fgets($h);
-$messeg='no';
-while (($d = fgets($h)) !== FALSE) 
-	{$data=explode('^',$d);
-		if($id==$data['0']){
-$messeg='ok';		
-$b=implode('^',$data);
-$b=$this->trim_replace_cc($b);
-break;
-}	}fclose($h);
-
-if($messeg=='ok'){
-$stolbci=$this->getFieldsName("$n","$p",'3');
-$vs=count($fn);
-for($k=0;$k<$vs;$k++){ 
-if(array_key_exists($fn[$k], $stolbci)){$data[$stolbci[$fn[$k]]['0']]=$this->obrezka_poley_cc($this->zss_replace_cc($v[$k]),$stolbci[$fn[$k]]['1']);}	
-	                                }			 
-$data['0']=$id;		 		 
-$znachenie=implode('^',$data);
-$znachenie=$this->trim_replace_cc($znachenie);
-$a=file_get_contents("$file");	
-$a=str_replace("$b","$znachenie",$a);	
-file_put_contents($file, $a, LOCK_EX);
-return $messeg;
-}
-else{ return $messeg;}
-}
-
-/* fileCacheLines - генератор перебора полей файла для более быстрого открывания в генераторе и экономии памяти при больших файлах бд используется в кешировании.*/
+    /**
+	 *генератор перебора полей файла для более быстрого открывания в генераторе
+	 *
+	 *и экономии памяти при больших файлах бд используется в кешировании. отличие
+	 *от select только незначительное но это необходимо чтобы правильно подсчитать
+	 *количество символов строки каждой от начала
+	 */
 public function fileCacheLines($filename) {
     $file = fopen($filename.'.php', "r");
     while (!feof($file))  {$line= fgets($file);
 $cmd=(yield $line);
 if ($cmd == 'stop') {
 fclose($file);
-return; /* выход из генератора.*/
+return;
         }
 		}fclose($file);
 }
 
 /*cache_cc служит для создания кеша запросов к бд и более быстрому открыванию нужной строки из нее*/
 
-public function cache_cc($p,$puti,$namebd,$datecache,$config_site){
+public function cache($p,$puti,$namebd,$datecache,$config_site){
 
  clearstatcache();
  if(!is_dir($p.$config_site->dir_cache)) {mkdir($p.$config_site->dir_cache);}
@@ -291,10 +305,21 @@ fclose($m);
 }
 
 /*del_cc удаляет строку из файла и сохраняет изменения. по его id если столбца id небудет то и неудалит ничего*/
-public function delLine_cc($namebd,$id,$p){}
+public function delLine($namebd,$id,$p){
+
+$gen=$this->select($namebd,$p);
+	 foreach ($gen as $line) {
+	 $data=explode('^',$line);
+	 if($line['0']==$id){ $old_data=$line; $gen->send('stop');} 
+                        }
+if($old_data!=null){}
+else{}
+
+
+}
 
 /* delbd_cc удаляет бд текстовую с категорией и всеми её файлами*/
-public function delBd_cc($namebd,$p){}
+public function delBd($namebd,$p){}
 
 /* create_cc - создание столбцов тектсовой бд
 $znachenie - строка с введенными в нее названиями столбцов будущей бд как с параметром который ставится через пробел так и без него 
@@ -328,7 +353,7 @@ fclose($m);
 }
 
 /* createcod_cc запись и создание любого кода который нам необходим */
-public function createcod_cc($name_puti,$znachenie,$p){
+public function createcod($name_puti,$znachenie,$p){
 $m=fopen($p.$name_puti,"w");
 flock($m, LOCK_EX);
 fwrite($m,$znachenie);
